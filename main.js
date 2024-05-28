@@ -2,9 +2,9 @@ import './style.css'
 
 const grid = document.querySelector(".grid");
 const result = document.querySelector(".result");
-
-// napravit easy, medium i hard verziju igrice;
-//  easy = 3x3, medium=4x4 i hard je 5x5;
+const easyMode = document.querySelector(".easy-mode");
+const mediumMode = document.querySelector(".medium-mode");
+const hardMode = document.querySelector(".hard-mode");
 
 class Square{
   constructor(color) {
@@ -23,10 +23,30 @@ class SquareManager{
   constructor() {
     this.squareArray = [];
     this.clickCounter = 0;
+    this.numberOfSquaresEasy = 9;
+    this.numberOfSquaresMedium = 16;
+    this.numberOfSquaresHard = 25;
+    this.difficultyLevel = "easy"
+  }
+
+  setDifficultyLevelEasy() {
+    this.difficultyLevel = "easy"
+  }
+  
+  setDifficultyLevelMedium() {
+    this.difficultyLevel = "medium"
+  }
+
+  setDifficultyLevelHard() {
+    this.difficultyLevel = "hard"
   }
 
   incrementCounter() {
     this.clickCounter++;
+  }
+
+  resetCounter() {
+    this.clickCounter = 0;
   }
 
   addSquare(square) {
@@ -34,9 +54,6 @@ class SquareManager{
   }
 
   renderSquares() {
-    // ovo moze u css
-    grid.style.setProperty("grid-template-columns", "1fr 1fr 1fr 1fr");
-    grid.style.setProperty("grid-template-rows", "1fr 1fr 1fr");
     this.squareArray.forEach(square => {
       const cell = document.createElement("div")
       cell.style.backgroundColor = square.color;
@@ -50,41 +67,21 @@ class SquareManager{
     return this.squareArray.find(square => square.id === squareId)
   }
 
-  // shuffleSquares(array) {
-  //   let currentIndex = array.length;
-  //   console.log(array.length)
-  //   while (currentIndex != 0) {
-  //     let randomIndex = Math.floor(Math.random() * currentIndex);
-  //     currentIndex--;
-  //     // console.log("before", array)
-  //     // console.log("currentIndex", array[currentIndex])
-  //     // console.log("randomIndex", array[randomIndex])
-  //     [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
-  //     console.log("array", array)
-  //   }
-  // }
-  
-  // shuffleArray(array) {
-  //   for (let i = array.length - 1; i > 0; i--) {
-  //     const j = Math.floor(Math.random() * (i + 1));
-  //     const temp = array[i];
-  //     array[i] = array[j];
-  //     array[j] = temp;
-  //     console.log("array", array)
-  //   }
-  // }
-
   shuffleArray(array) {
     array.sort(() => Math.random() - 0.5);
   }
 
-  fillArray() {
-    const colors = ["#d72700", "#140dda", "#d99b52", "#8a2be2", "#0c0d0e", "#77c4ff", "#82ff77", "#ff77bc", "#77ffec", "#d9ef48", "#4894ef", "#3e1010"];
-    for (let c = 0; c < 12; c++) {
+  fillArray(levelMode) {
+    const colors = ["#ff0000", "#ffff00", "#00ff00", "#0000ff", "#800080", "#dc143c", "#ffd700", "#c0c0c0", "#008080", "#a52a2a", "#ee82ee", "#ff007f", "#40ffff", "#00ffff", "#808000", "#ff00ff", "#4b0082", "#000000", "#ffffff", "#ff9999", "#00bfff", "#90ee90", "#2e8b57", "#ff69b4", "#ffa500"];
+    for (let c = 0; c < levelMode; c++) {
       const square = new Square(c);
-      square.color += colors[c];
+      square.color = colors[c];
       this.squareArray.push(square);
     }
+  }
+
+  emptyArray() {
+    this.squareArray = []
   }
 
   restartGame() {
@@ -93,8 +90,20 @@ class SquareManager{
   }
 }
 
+function displayResultEasy() {
+  result.textContent = `Squares clicked: ${sqareManager.clickCounter}/${sqareManager.numberOfSquaresEasy}`
+}
+
+function displayResultMedium() {
+  result.textContent = `Squares clicked: ${sqareManager.clickCounter}/${sqareManager.numberOfSquaresMedium}`
+}
+
+function displayResultHard() {
+  result.textContent = `Squares clicked: ${sqareManager.clickCounter}/${sqareManager.numberOfSquaresHard}`
+}
+
 const sqareManager = new SquareManager();
-sqareManager.fillArray()
+sqareManager.fillArray(sqareManager.numberOfSquaresEasy)
 sqareManager.renderSquares()
 
 grid.addEventListener("click", (event) => {
@@ -118,4 +127,41 @@ grid.addEventListener("click", (event) => {
       alert("You win! Play again!")
     }
   }
+})
+
+easyMode.addEventListener("click", () => {
+  sqareManager.emptyArray()
+  sqareManager.fillArray(sqareManager.numberOfSquaresEasy)
+  // sqareManager.restartGame()
+  grid.innerHTML = "";
+  grid.style.setProperty("grid-template-columns", "repeat(3, 1fr)");
+  grid.style.setProperty("grid-template-rows", "repeat(3, 1fr)");
+  sqareManager.renderSquares()
+  sqareManager.resetCounter()
+  displayResultEasy()
+})
+
+mediumMode.addEventListener("click", () => {
+  sqareManager.emptyArray()
+  sqareManager.fillArray(sqareManager.numberOfSquaresMedium)
+  // sqareManager.restartGame()
+  grid.innerHTML = "";
+  sqareManager.renderSquares()
+  grid.style.setProperty("grid-template-columns", "repeat(4, 1fr)");
+  grid.style.setProperty("grid-template-rows", "repeat(4, 1fr)");
+  sqareManager.resetCounter()
+  displayResultMedium()
+  
+})
+
+hardMode.addEventListener("click", () => {
+  sqareManager.emptyArray()
+  sqareManager.fillArray(sqareManager.numberOfSquaresHard);
+  // sqareManager.restartGame()
+  grid.innerHTML = "";
+  sqareManager.renderSquares()
+  grid.style.setProperty("grid-template-columns", "repeat(5, 1fr)");
+  grid.style.setProperty("grid-template-rows", "repeat(5, 1fr)");
+  sqareManager.resetCounter()
+  displayResultHard()
 })

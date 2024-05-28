@@ -10,8 +10,17 @@
     <div class="container">
       <h1>Memory game!</h1>
       <p>The goal of the game is to click on all squares only once! If you click on the same square twice, you loose!</p>
-      <p class="result">Squares clicked: 0/12</p>
-      <div class="grid"></div>
+      <div class="game">
+        <div class="modes">
+          <button class="easy-mode">Easy</button>
+          <button class="medium-mode">Medium</button>
+          <button class="hard-mode">Hard</button>
+        </div>
+        <div class="grid"></div>
+        <div class="game-result">
+          <h4 class="result">Squares clicked: 0/12</h4>
+        </div>
+      </div>
     </div>
     <script type="module" src="/main.js"></script>
   </body>
