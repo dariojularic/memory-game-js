@@ -5,6 +5,7 @@ const result = document.querySelector(".result");
 const easyMode = document.querySelector(".easy-mode");
 const mediumMode = document.querySelector(".medium-mode");
 const hardMode = document.querySelector(".hard-mode");
+// const gridCells = document.querySelectorAll(".grid-cell");
 
 class Square{
   constructor(color) {
@@ -105,6 +106,17 @@ function displayResultHard() {
 const sqareManager = new SquareManager();
 sqareManager.fillArray(sqareManager.numberOfSquaresEasy)
 sqareManager.renderSquares()
+// jel ok ovdje stavit querySelector? ako je prije renderSquares, ne radi
+const gridCells = document.querySelectorAll(".grid-cell");
+
+// dovrsit ovu finkciju
+gridCells.forEach(cellDiv => {
+  cellDiv.addEventListener("click", () => {
+    console.log(cellDiv)
+  })
+})
+
+
 
 grid.addEventListener("click", (event) => {
   if (event.target.className === "grid-cell") {
