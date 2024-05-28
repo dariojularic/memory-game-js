@@ -1,22 +1,19 @@
 import './style.css'
 
 const grid = document.querySelector(".grid");
-const start = document.querySelector(".start");
 const result = document.querySelector(".result");
 
-
-// kako napunit array na pocetku?
-
-
+// napravit easy, medium i hard verziju igrice;
+//  easy = 3x3, medium=4x4 i hard je 5x5;
 
 class Square{
-  constructor() {
+  constructor(color) {
     this.id = self.crypto.randomUUID();
-    this.color = "#";
+    this.color = color;
     this.clicked = false;
   }
 
-  isClicked() {
+  setIsClicked() {
     this.clicked = true;
   }
 }
@@ -28,11 +25,16 @@ class SquareManager{
     this.clickCounter = 0;
   }
 
+  incrementCounter() {
+    this.clickCounter++;
+  }
+
   addSquare(square) {
     this.squareArray.push(square);
   }
 
   renderSquares() {
+    // ovo moze u css
     grid.style.setProperty("grid-template-columns", "1fr 1fr 1fr 1fr");
     grid.style.setProperty("grid-template-rows", "1fr 1fr 1fr");
     this.squareArray.forEach(square => {
@@ -76,11 +78,10 @@ class SquareManager{
     array.sort(() => Math.random() - 0.5);
   }
 
-
   fillArray() {
-    const colors = ["d72700", "140dda", "d99b52", "8a2be2", "0c0d0e", "77c4ff", "82ff77", "ff77bc", "77ffec", "d9ef48", "4894ef", "3e1010"];
+    const colors = ["#d72700", "#140dda", "#d99b52", "#8a2be2", "#0c0d0e", "#77c4ff", "#82ff77", "#ff77bc", "#77ffec", "#d9ef48", "#4894ef", "#3e1010"];
     for (let c = 0; c < 12; c++) {
-      const square = new Square();
+      const square = new Square(c);
       square.color += colors[c];
       this.squareArray.push(square);
     }
@@ -90,7 +91,6 @@ class SquareManager{
     this.squareArray.forEach(square => square.clicked = false)
     this.clickCounter = 0;
   }
-
 }
 
 const sqareManager = new SquareManager();
@@ -101,21 +101,21 @@ grid.addEventListener("click", (event) => {
   if (event.target.className === "grid-cell") {
     const cell = sqareManager.findSquare(event.target.getAttribute("data-id"))
     if (cell.clicked === false) {
-      cell.isClicked()
-      sqareManager.clickCounter++;
+      cell.setIsClicked()
+      sqareManager.incrementCounter();
       result.textContent = `Squares clicked: ${sqareManager.clickCounter}/12`;
       sqareManager.shuffleArray(sqareManager.squareArray);
       grid.innerHTML = "";
       sqareManager.renderSquares()
     } else {
-      alert("You lose! Try again!");
       sqareManager.restartGame()
+      result.textContent = `Squares clicked: ${sqareManager.clickCounter}/12`;
+      alert("You lose! Try again!");
     }
     
     if(sqareManager.clickCounter >= 12) {
-      alert("You win! Play again!")
       sqareManager.restartGame()
-
+      alert("You win! Play again!")
     }
   }
 })
