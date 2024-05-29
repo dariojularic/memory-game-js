@@ -33,12 +33,6 @@ class SquareManager{
     this.numberOfSquares = squareNum;
   }
 
-  numberOfSquaresFunction(difficultyLevel) {
-    if (difficultyLevel === "easy") return 9
-    if (difficultyLevel === "medium") return 16
-    if (difficultyLevel === "hard") return 25
-  }
-
   incrementCounter() {
     this.clickCounter++;
   }
