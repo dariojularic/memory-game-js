@@ -13,7 +13,7 @@ class Square{
     this.color = color;
     this.clicked = false;
   }
-
+  
   setIsClicked() {
     this.clicked = true;
   }
@@ -24,36 +24,33 @@ class SquareManager{
   constructor() {
     this.squareArray = [];
     this.clickCounter = 0;
-    this.numberOfSquaresEasy = 9;
-    this.numberOfSquaresMedium = 16;
-    this.numberOfSquaresHard = 25;
     this.difficultyLevel = "easy"
   }
 
-  setDifficultyLevelEasy() {
-    this.difficultyLevel = "easy"
-  }
-  
-  setDifficultyLevelMedium() {
-    this.difficultyLevel = "medium"
+  numberOfSquares(difficultyLevel) {
+    if (difficultyLevel === "easy") return 9
+    if (difficultyLevel === "medium") return 16
+    if (difficultyLevel === "hard") return 25
   }
 
-  setDifficultyLevelHard() {
-    this.difficultyLevel = "hard"
-  }
+  setDifficultyLevel(btnValue) {
+    if (btnValue === "easy") this.difficultyLevel = "easy"
+    if (btnValue === "medium") this.difficultyLevel = "medium"
+    if (btnValue === "hard") this.difficultyLevel = "hard"
+  } 
 
   incrementCounter() {
     this.clickCounter++;
   }
-
+  
   resetCounter() {
     this.clickCounter = 0;
   }
-
+  // ovu funkciju ne koristim, jel je mogu koristit u fillArray()?
   addSquare(square) {
     this.squareArray.push(square);
   }
-
+  
   renderSquares() {
     this.squareArray.forEach(square => {
       const cell = document.createElement("div")
@@ -67,54 +64,62 @@ class SquareManager{
   findSquare(squareId) {
     return this.squareArray.find(square => square.id === squareId)
   }
-
+  
   shuffleArray(array) {
     array.sort(() => Math.random() - 0.5);
   }
-
+  
   fillArray(levelMode) {
-    const colors = ["#ff0000", "#ffff00", "#00ff00", "#0000ff", "#800080", "#dc143c", "#ffd700", "#c0c0c0", "#008080", "#a52a2a", "#ee82ee", "#ff007f", "#40ffff", "#00ffff", "#808000", "#ff00ff", "#4b0082", "#000000", "#ffffff", "#ff9999", "#00bfff", "#90ee90", "#2e8b57", "#ff69b4", "#ffa500"];
+    const colors = ["#ff0000", "#ffff00", "#00ff00", "#0000ff", "#800080", "#dc143c", "#ffd700", "#c0c0c0", "#008080", "#a52a2a", "#ee82ee", "#ff007f", "#30d6d6", "#00ffff", "#808000", "#ff00ff", "#4b0082", "#000000", "#e6e6e6", "#ff9999", "#00bfff", "#90ee90", "#2e8b57", "#ff69b4", "#ffa500"];
     for (let c = 0; c < levelMode; c++) {
       const square = new Square(c);
       square.color = colors[c];
       this.squareArray.push(square);
     }
   }
-
+  
   emptyArray() {
     this.squareArray = []
   }
-
+  
   restartGame() {
     this.squareArray.forEach(square => square.clicked = false)
     this.clickCounter = 0;
   }
 }
 
-function displayResultEasy() {
-  result.textContent = `Squares clicked: ${sqareManager.clickCounter}/${sqareManager.numberOfSquaresEasy}`
+function displayResult() {
+  result.textContent = `Squares clicked:
+  ${sqareManager.clickCounter}/${sqareManager.numberOfSquares(sqareManager.difficultyLevel)}`
 }
 
-function displayResultMedium() {
-  result.textContent = `Squares clicked: ${sqareManager.clickCounter}/${sqareManager.numberOfSquaresMedium}`
-}
-
-function displayResultHard() {
-  result.textContent = `Squares clicked: ${sqareManager.clickCounter}/${sqareManager.numberOfSquaresHard}`
+function styleGrid(difficultyLevel) {
+  if (difficultyLevel === "easy") {
+    grid.style.setProperty("grid-template-columns", "repeat(3, 1fr)");
+    grid.style.setProperty("grid-template-rows", "repeat(3, 1fr)");
+  } else if (difficultyLevel === "medium") {
+    grid.style.setProperty("grid-template-columns", "repeat(4, 1fr)");
+    grid.style.setProperty("grid-template-rows", "repeat(4, 1fr)"); 
+  } else {
+    grid.style.setProperty("grid-template-columns", "repeat(5, 1fr)");
+    grid.style.setProperty("grid-template-rows", "repeat(5, 1fr)");
+  }
 }
 
 const sqareManager = new SquareManager();
-sqareManager.fillArray(sqareManager.numberOfSquaresEasy)
+sqareManager.fillArray(sqareManager.numberOfSquares(sqareManager.difficultyLevel))
 sqareManager.renderSquares()
+displayResult()
 // jel ok ovdje stavit querySelector? ako je prije renderSquares, ne radi
 const gridCells = document.querySelectorAll(".grid-cell");
 
-// dovrsit ovu finkciju
-gridCells.forEach(cellDiv => {
-  cellDiv.addEventListener("click", () => {
-    console.log(cellDiv)
-  })
-})
+// dovrsit ovu finkciju -- problem je sto na renderSqares() idu novi divovi
+// gridCells.forEach(cellDiv => {
+//   cellDiv.addEventListener("click", () => {
+//     console.log(cellDiv)
+//     console.log(gridCells)
+//   })
+// })
 
 
 
@@ -124,56 +129,52 @@ grid.addEventListener("click", (event) => {
     if (cell.clicked === false) {
       cell.setIsClicked()
       sqareManager.incrementCounter();
-      result.textContent = `Squares clicked: ${sqareManager.clickCounter}/12`;
       sqareManager.shuffleArray(sqareManager.squareArray);
       grid.innerHTML = "";
       sqareManager.renderSquares()
+      displayResult()
     } else {
       sqareManager.restartGame()
-      result.textContent = `Squares clicked: ${sqareManager.clickCounter}/12`;
+      displayResult()
       alert("You lose! Try again!");
     }
     
-    if(sqareManager.clickCounter >= 12) {
+    if(sqareManager.clickCounter >= sqareManager.numberOfSquares(sqareManager.difficultyLevel)) {
       sqareManager.restartGame()
       alert("You win! Play again!")
     }
   }
 })
 
-easyMode.addEventListener("click", () => {
+easyMode.addEventListener("click", (event) => {
+  sqareManager.setDifficultyLevel(event.target.value)
   sqareManager.emptyArray()
-  sqareManager.fillArray(sqareManager.numberOfSquaresEasy)
-  // sqareManager.restartGame()
+  sqareManager.fillArray(sqareManager.numberOfSquares(sqareManager.difficultyLevel))
   grid.innerHTML = "";
-  grid.style.setProperty("grid-template-columns", "repeat(3, 1fr)");
-  grid.style.setProperty("grid-template-rows", "repeat(3, 1fr)");
+  styleGrid(sqareManager.difficultyLevel)
   sqareManager.renderSquares()
   sqareManager.resetCounter()
-  displayResultEasy()
+  displayResult()
 })
 
-mediumMode.addEventListener("click", () => {
+mediumMode.addEventListener("click", (event) => {
+  sqareManager.setDifficultyLevel(event.target.value)
   sqareManager.emptyArray()
-  sqareManager.fillArray(sqareManager.numberOfSquaresMedium)
-  // sqareManager.restartGame()
+  sqareManager.fillArray(sqareManager.numberOfSquares(sqareManager.difficultyLevel))
   grid.innerHTML = "";
   sqareManager.renderSquares()
-  grid.style.setProperty("grid-template-columns", "repeat(4, 1fr)");
-  grid.style.setProperty("grid-template-rows", "repeat(4, 1fr)");
+  styleGrid(sqareManager.difficultyLevel)
   sqareManager.resetCounter()
-  displayResultMedium()
-  
+  displayResult()
 })
 
-hardMode.addEventListener("click", () => {
+hardMode.addEventListener("click", (event) => {
+  sqareManager.setDifficultyLevel(event.target.value)
   sqareManager.emptyArray()
-  sqareManager.fillArray(sqareManager.numberOfSquaresHard);
-  // sqareManager.restartGame()
+  sqareManager.fillArray(sqareManager.numberOfSquares(sqareManager.difficultyLevel));
   grid.innerHTML = "";
   sqareManager.renderSquares()
-  grid.style.setProperty("grid-template-columns", "repeat(5, 1fr)");
-  grid.style.setProperty("grid-template-rows", "repeat(5, 1fr)");
+  styleGrid(sqareManager.difficultyLevel)
   sqareManager.resetCounter()
-  displayResultHard()
+  displayResult()
 })
