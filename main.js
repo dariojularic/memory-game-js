@@ -111,7 +111,7 @@ sqareManager.fillArray(sqareManager.numberOfSquares(sqareManager.difficultyLevel
 sqareManager.renderSquares()
 displayResult()
 // jel ok ovdje stavit querySelector? ako je prije renderSquares, ne radi
-const gridCells = document.querySelectorAll(".grid-cell");
+// const gridCells = document.querySelectorAll(".grid-cell");
 
 // dovrsit ovu finkciju -- problem je sto na renderSqares() idu novi divovi
 // gridCells.forEach(cellDiv => {
@@ -120,8 +120,6 @@ const gridCells = document.querySelectorAll(".grid-cell");
 //     console.log(gridCells)
 //   })
 // })
-
-
 
 grid.addEventListener("click", (event) => {
   if (event.target.className === "grid-cell") {
@@ -142,6 +140,7 @@ grid.addEventListener("click", (event) => {
     if(sqareManager.clickCounter >= sqareManager.numberOfSquares(sqareManager.difficultyLevel)) {
       sqareManager.restartGame()
       alert("You win! Play again!")
+      displayResult()
     }
   }
 })

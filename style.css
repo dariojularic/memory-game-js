@@ -1,3 +1,7 @@
+html {
+  background-color: whitesmoke;
+}
+
 .container {
   display: flex;
   flex-direction: column;
@@ -42,7 +46,7 @@ button {
   background-color: rgb(47, 88, 254);
   cursor: pointer;
   transition: 0.5s;
-  /* width: 160px; */
+  width: 240px;
 }
 
 button:hover {
@@ -75,7 +79,4 @@ h1 {
   font-size: 40px;
   white-space: pre;
   text-align: center;
-}
-
-span {
 }
